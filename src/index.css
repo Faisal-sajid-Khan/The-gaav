@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: #fcf9f8;
+    color: #1b1c1c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background-color: #f1bd8b;
+    color: #2c1600;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-on-primary px-8 py-4 font-sans text-sm font-semibold tracking-wider uppercase;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    background-color: #4a2e10;
+  }
+  .btn-secondary {
+    @apply border border-primary text-primary px-8 py-4 font-sans text-sm font-semibold tracking-wider uppercase;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #603d16;
+    color: #ffffff;
+  }
+  .section-padding {
+    @apply px-5 sm:px-10 lg:px-20;
+  }
+  .label-sm {
+    @apply font-sans text-xs font-semibold tracking-widest uppercase;
+  }
+  .heritage-divider {
+    width: 40px;
+    height: 1px;
+    background-color: #d9a441;
+  }
+  .product-card {
+    background: transparent;
+    border: 1px solid #efe5d5;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .product-card:hover {
+    border-color: #d4c4b7;
+    box-shadow: 0 20px 40px rgba(123, 84, 43, 0.08);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #fcf9f8; }
+::-webkit-scrollbar-thumb { background: #d4c4b7; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #82756a; }

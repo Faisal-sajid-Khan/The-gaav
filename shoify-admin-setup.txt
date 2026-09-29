@@ -1,0 +1,158 @@
+## 📋 Shopify Admin Setup Guide (India-Only Store)
+### 1️⃣ Set Default Currency to INR (Indian Rupees)
+1. Go to Settings > Store details
+2. Scroll to Store currency section
+3. Click Change formatting
+4. Select Indian Rupee (₹) as your default currency
+5. Save changes
+### 2️⃣ Configure Shipping for India Only
+1. Go to Settings > Shipping and delivery
+2. Under Shipping zones , click Create shipping zone
+3. Name it "India Shipping"
+4. Under Countries/regions , select India
+5. Add your shipping rates (flat rate, weight-based, etc.)
+6. Important : Delete or disable any other shipping zones that include other countries
+### 3️⃣ Fix Product Pricing (0.0 CAD Issue)
+For the Bioglow Skincare Collection product showing 0.0 CAD:
+
+1. Go to Products > All products
+2. Click on the Bioglow Skincare Collection product
+3. Scroll down to the Variants section
+4. For each variant (15ml, 30ml, etc.):
+   - Click Edit on the variant
+   - Make sure Price is set to your desired INR amount
+   - If you had a "Compare at price" set, verify that too
+   - Check Inventory to ensure stock is available
+5. Save the product
+### 4️⃣ Inventory Management Setup
+1. Go to Settings > Locations
+2. Verify your main store location is set to India
+3. For each product:
+   - Go to product details page
+   - Scroll to Inventory section
+   - Check Track quantity
+   - Enter stock levels for each variant
+   - Check Continue selling when out of stock only if you want backorders
+### 5️⃣ Customize Checkout for Better UX
+1. Go to Settings > Checkout
+2. Branding :
+   - Upload your logo
+   - Match the colors to your store's theme
+3. Customer information :
+   - Make "Full name" required
+   - Make "Phone number" optional or required as needed
+4. Form options :
+   - Select India as the default country
+5. Order status page :
+   - Add custom messaging for Indian customers (e.g., delivery time expectations)
+### 6️⃣ Payment Gateways for India
+1. Go to Settings > Payments
+2. Add Indian payment gateways:
+   - Shopify Payments (if available in India)
+   - Razorpay
+   - PayU
+   - CCAvenue
+3. Make sure INR is your accepted currency
+### 7️⃣ Tax Setup for India
+1. Go to Settings > Taxes and duties
+2. Set up GST rates for India
+3. Shopify can automatically calculate GST for Indian states if you enable tax calculations
+### 8️⃣ Test the Checkout Process
+1. Place a test order using Shopify's Bogus Gateway or test mode
+2. Verify:
+   - Currency shows as ₹ (INR)
+   - Shipping options only for India
+   - Prices are correct for all products
+   - Checkout redirect works properly
+## 🔍 Quick Fixes Recap:
+- 0.0 CAD Product : Edit the product variants and set correct INR prices
+- Canadian Dollar Issue : Set default currency to INR in Store settings
+- Checkout Country : Set India as default country in Checkout settings
+Once you've configured these settings in your Shopify admin, your store will be fully set up for Indian customers with proper INR pricing and shipping!
+
+2/3 done
+
+Update CartDrawer to format prices with INR currency symbol and proper styling
+
+Provide Shopify admin setup guidance for India-only store
+
+Guide on product pricing, inventory, and checkout customization
+
+Thought
+
+Perfect! Let's mark the last todo item as complete:
+
+3/3 done
+
+Update CartDrawer to format prices with INR currency symbol and proper styling
+
+Provide Shopify admin setup guidance for India-only store
+
+Guide on product pricing, inventory, and checkout customization
+
+Thought
+
+Excellent! Here's a summary of what we've accomplished:
+
+## ✅ Completed Tasks
+1. Updated Shop Page :
+   
+   - Replaced hardcoded categories with dynamic Shopify collections
+   - When a collection is selected, it fetches and displays only products from that collection
+   - "All Products" shows everything
+2. Fixed Price Display :
+   
+   - Updated CartDrawer.js with proper INR formatting using Intl.NumberFormat('en-IN', { currency: 'INR' })
+   - Updated ProductGrid.js with the same INR formatting
+   - Prices now show correctly as ₹1,234.56 instead of just numbers with currency codes
+3. Provided Complete Shopify Admin Guide :
+   
+   - Step-by-step instructions for setting up INR as default currency
+   - Shipping configuration for India only
+   - How to fix the 0.0 CAD pricing issue on products
+   - Inventory management setup
+   - Checkout customization tips
+   - Payment gateway and tax configuration for India
+Now your store is ready to serve Indian customers with proper currency display, dynamic collections, and all the Shopify settings configured correctly! 🚀
+
+Completed
+
+Diff
+
+24%
+
+
+
+
+
+🏗️ Phase 1: Store Foundation (Admin Setup)
+
+✅ Shop location (Ahilyanagar) — Done
+✅ India market with INR currency — Done
+Store branding — logo, colors, brand name in Settings > Brand
+Shipping — set up India shipping zones and rates
+Payments — enable a payment gateway (Razorpay or Cashfree work well for India)
+Taxes — configure GST for India
+🛍️ Phase 2: Products
+
+Add your skincare products with good photos, descriptions, ingredients
+Set up collections (e.g., Moisturizers, Serums, Cleansers)
+Set INR prices per product
+Set up inventory tracking
+🌐 Phase 3: Headless Frontend
+
+Connect thegaav.com → Netlify (headless frontend)
+Connect shop.thegaav.com → Shopify (checkout)
+Use Shopify Storefront API to fetch products/collections on your frontend
+Match checkout branding to your frontend UI
+📦 Phase 4: Fulfillment
+
+Set up shipping carriers or a 3PL for India delivery
+Configure order notifications in English/Hindi
+📣 Phase 5: Launch
+
+Test end-to-end purchase flow in INR
+Set up basic analytics (Shopify Analytics + Google Analytics)
+Go live!
+Where would you like to start? I'd suggest tackling branding and payments next since those are quick wins. Want me to take you to the branding settings?
+
