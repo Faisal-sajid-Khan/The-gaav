@@ -1,5 +1,13 @@
 import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 import { useDispatch } from 'react-redux';
 import { initializeCart } from './store/cartSlice';
 import Navbar from './components/layout/Navbar';
@@ -24,6 +32,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-surface">
+      <ScrollToTop />
       <Navbar />
       <CartDrawer />
       <main>
