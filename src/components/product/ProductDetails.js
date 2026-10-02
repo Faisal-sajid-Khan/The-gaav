@@ -89,31 +89,31 @@ const TRUST_ICONS = [
   { Icon: RotateCcw,   label: 'Easy Returns'        },
 ];
 
+import { productCopy } from './productCopy';
+
 /* ─────────────────────────────────────────────────────────────────
    ACCORDION ITEM
 ───────────────────────────────────────────────────────────────── */
 function AccordionItem({ id, title, Icon, children, open, onToggle }) {
   return (
-    <div className="border-b border-outline-variant">
+    <div className="border-b border-outline-variant/40">
       <button
         onClick={() => onToggle(id)}
         onMouseDown={(e) => e.preventDefault()}
         className="w-full flex items-center justify-between py-4 text-left group"
       >
         <span className="flex items-center gap-2.5">
-          <Icon size={15} strokeWidth={1.75} className="text-gold" />
-          <span className="label-sm text-primary group-hover:text-gold transition-colors">
+          {Icon && <Icon size={16} strokeWidth={1.5} className="text-primary" />}
+          <span className="text-sm font-serif font-bold text-primary group-hover:text-primary-container transition-colors">
             {title}
           </span>
         </span>
         <ChevronDown
-          size={15}
-          strokeWidth={2}
+          size={16}
+          strokeWidth={1.5}
           className={`text-outline transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
         />
       </button>
-
-      {/* CSS grid-rows trick: animates height without layout-reflow scroll */}
       <div
         style={{
           display: 'grid',
@@ -137,7 +137,7 @@ function ProductDetails({ product }) {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity]               = useState(1);
   const [adding, setAdding]                   = useState(false);
-  const [openAccordion, setOpenAccordion]     = useState('description');
+  const [openAccordion, setOpenAccordion]     = useState('ingredients');
 
   const variants = product.variants?.edges?.map((e) => e.node) || [];
   const options  = product.options || [];
@@ -162,258 +162,230 @@ function ProductDetails({ product }) {
   const compare  = parseFloat(selectedVariant?.compareAtPrice?.amount || product.compareAtPriceRange?.minVariantPrice?.amount || 0);
   const discount = compare > price ? Math.round(((compare - price) / compare) * 100) : 0;
 
-  /* ── Read metafields from product ── */
-  const ingredientMeta = product.ingredient_meta;   // custom / ingredient
-  const directionMeta  = product.direction_meta;    // custom / direction_to_use
+  const toggleAccordion = (id) => setOpenAccordion((prev) => (prev === id ? null : id));
 
-  const toggleAccordion = (id) =>
-    setOpenAccordion((prev) => (prev === id ? null : id));
+  // Determine which copy to use based on the product handle
+  const handleMap = {
+    'utane': 'utane',
+    'nikhar': 'nikhar',
+    'nirmal': 'nirmal',
+    'kanti': 'kanti'
+  };
+  const key = handleMap[product.handle?.toLowerCase()];
+  const copy = key ? productCopy[key] : null;
 
   return (
-    <>
-      <style>{descriptionStyles}</style>
+    <div className="space-y-6">
+      {/* Brand Tagline */}
+      <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-outline">
+        Village Wisdom / Modern Care
+      </p>
 
-      <div className="space-y-5">
+      {/* Title */}
+      <h1 className="font-serif text-3xl sm:text-4xl text-primary font-bold leading-tight -mt-2">
+        {product.title}
+      </h1>
 
-        {/* Vendor / Product Type */}
-        {(product.vendor || product.productType) && (
-          <div className="flex items-center gap-2 flex-wrap">
-            {product.vendor && (
-              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-outline">
-                {product.vendor}
-              </span>
-            )}
-            {product.vendor && product.productType && (
-              <span className="text-outline-variant">·</span>
-            )}
-            {product.productType && (
-              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-outline">
-                {product.productType}
-              </span>
-            )}
-          </div>
-        )}
+      {/* Short Description (Hero) */}
+      {copy?.shortDescription && (
+        <p className="text-[15px] text-on-surface-variant leading-relaxed">
+          {copy.shortDescription}
+        </p>
+      )}
 
-        {/* Rating */}
-        <div className="flex items-center gap-2">
-          <div className="flex gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={13} className="text-gold fill-gold" />
-            ))}
-          </div>
-          <span className="text-xs text-on-surface-variant font-medium">4.9</span>
-          <span className="text-xs text-outline">(124 reviews)</span>
+      {/* Price & Weight */}
+      <div>
+        <div className="flex items-end gap-3 flex-wrap">
+          <span className="font-sans font-semibold text-2xl text-primary">
+            ₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+          </span>
+          <span className="text-sm text-outline-variant font-medium pb-1">| 100 g</span>
+        </div>
+        <p className="text-[11px] text-outline mt-1 tracking-wide">Inclusive of all taxes</p>
+      </div>
+
+      <div className="h-px bg-outline-variant/30" />
+
+      {/* Quantity + CTA */}
+      <div className="flex items-center gap-3 pt-2">
+        <div className="flex items-center border border-outline-variant rounded-none overflow-hidden h-12">
+          <button
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            className="w-12 h-full flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
+          >
+            <Minus size={14} strokeWidth={2} />
+          </button>
+          <span className="w-8 text-center text-sm font-semibold text-primary select-none">
+            {quantity}
+          </span>
+          <button
+            onClick={() => setQuantity(quantity + 1)}
+            className="w-12 h-full flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
+          >
+            <Plus size={14} strokeWidth={2} />
+          </button>
         </div>
 
-        {/* Title */}
-        <h1 className="font-serif text-3xl sm:text-4xl text-primary font-bold leading-tight">
-          {product.title}
-        </h1>
+        <button
+          onClick={handleAdd}
+          disabled={adding || !selectedVariant?.availableForSale}
+          className="flex-1 h-12 bg-primary text-on-primary font-bold text-sm tracking-[0.1em] uppercase hover:bg-primary-container transition-all duration-200 disabled:opacity-40"
+        >
+          {adding
+            ? <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin inline-block" />
+            : 'Add to Cart'}
+        </button>
+      </div>
 
-        {/* Short tagline — first sentence */}
-        {product.description && (
-          <p className="text-sm text-on-surface-variant leading-relaxed border-l-2 border-gold pl-3 italic">
-            {product.description.split('.')[0]}.
+      {/* Long description */}
+      {copy?.longDescription && (
+        <div className="pt-6">
+          <p className="text-sm text-on-surface-variant leading-loose whitespace-pre-line">
+            {copy.longDescription}
           </p>
-        )}
-
-        {/* Price */}
-        <div>
-          <div className="flex items-end gap-3 flex-wrap">
-            <span className="font-sans font-bold text-3xl text-primary">
-              ₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
-            </span>
-            {compare > price && (
-              <>
-                <span className="text-base text-outline line-through pb-0.5">
-                  ₹{Number(compare).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
-                </span>
-                <span className="text-xs font-black bg-success/10 text-success px-2.5 py-1 rounded-full">
-                  {discount}% OFF
-                </span>
-              </>
-            )}
-          </div>
-          <p className="text-xs text-outline mt-1">Inclusive of all taxes</p>
         </div>
+      )}
 
-        {/* Tags */}
-        {product.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {product.tags.slice(0, 5).map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3 py-1 border border-outline-variant rounded-full text-[11px] font-semibold text-on-surface-variant tracking-wide"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+      {/* The Story Block */}
+      {copy?.story && (
+        <div className="bg-gaav-cream p-6 my-8 border-l-2 border-primary">
+          <p className="text-sm text-primary font-serif leading-relaxed whitespace-pre-line italic">
+            "{copy.story}"
+          </p>
+        </div>
+      )}
 
-        <div className="h-px bg-outline-variant/50" />
+      {/* Purity Promise */}
+      <div className="bg-gaav-sand/40 p-5 rounded-sm my-6">
+        <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-primary mb-2">The Purity Promise</p>
+        <p className="text-xs text-on-surface-variant leading-relaxed">
+          We never use animal fat, synthetic colours, parabens or sulphates.<br />
+          Only honest ingredients that are kind to you and the planet.
+        </p>
+      </div>
 
-        {/* Variant Options */}
-        {options.filter((o) => o.values.length > 1).map((option) => (
-          <div key={option.name}>
-            <p className="text-sm font-semibold text-primary mb-3">
-              {option.name}:&nbsp;
-              <span className="text-on-surface-variant font-normal">
-                {selectedVariant?.selectedOptions?.find((o2) => o2.name === option.name)?.value}
-              </span>
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {option.values.map((value) => {
-                const v          = variants.find((vr) => vr.selectedOptions?.some((o2) => o2.name === option.name && o2.value === value));
-                const isSelected = selectedVariant?.selectedOptions?.some((o2) => o2.name === option.name && o2.value === value);
-                const available  = v?.availableForSale;
-                return (
-                  <button
-                    key={value}
-                    onClick={() => available && setSelectedVariant(v)}
-                    disabled={!available}
-                    className={`min-w-[56px] px-4 py-2.5 text-sm rounded-lg border transition-all duration-200 ${
-                      isSelected
-                        ? 'border-primary bg-primary text-on-primary font-semibold shadow-sm'
-                        : available
-                        ? 'border-outline-variant text-on-surface hover:border-primary hover:text-primary'
-                        : 'border-outline-variant/40 text-outline/50 cursor-not-allowed line-through bg-surface-low'
-                    }`}
-                  >
-                    {value}
-                  </button>
-                );
-              })}
-            </div>
+      {/* Trust Badges */}
+      <div className="grid grid-cols-2 gap-y-4 gap-x-2 py-4 border-y border-outline-variant/30">
+        {[
+          'Gentle & Nourishing',
+          'Pure Fragrance',
+          'Naturally Moisturising',
+          'Suitable for all Skin Types'
+        ].map((label) => (
+          <div key={label} className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-outline shrink-0" />
+            <span className="text-[11px] font-medium text-on-surface-variant tracking-wide leading-tight">
+              {label}
+            </span>
           </div>
         ))}
+      </div>
 
-        {/* Quantity + CTA */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center border border-outline-variant rounded-xl overflow-hidden">
-            <button
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="w-11 h-12 flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
-            >
-              <Minus size={14} strokeWidth={2.5} />
-            </button>
-            <span className="w-10 text-center text-sm font-bold text-primary select-none">
-              {quantity}
-            </span>
-            <button
-              onClick={() => setQuantity(quantity + 1)}
-              className="w-11 h-12 flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
-            >
-              <Plus size={14} strokeWidth={2.5} />
-            </button>
-          </div>
-
-          <button
-            onClick={handleAdd}
-            disabled={adding || !selectedVariant?.availableForSale}
-            className="flex-1 h-12 border-2 border-primary text-primary font-bold text-sm tracking-[0.1em] uppercase rounded-xl hover:bg-primary hover:text-on-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {adding
-              ? <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin inline-block" />
-              : 'Add to Cart'}
-          </button>
-
-          <button
-            onClick={handleAdd}
-            disabled={adding || !selectedVariant?.availableForSale}
-            className="flex-1 h-12 bg-primary text-on-primary font-bold text-sm tracking-[0.1em] uppercase rounded-xl hover:bg-[#4a2e10] transition-all duration-200 disabled:opacity-40 shadow-md shadow-primary/20"
-          >
-            Buy Now
-          </button>
-        </div>
-
-        {/* Stock indicator */}
-        {selectedVariant && (
-          <p className={`text-xs font-semibold flex items-center gap-1.5 -mt-1 ${
-            selectedVariant.availableForSale ? 'text-success' : 'text-error'
-          }`}>
-            <span className={`w-2 h-2 rounded-full ${
-              selectedVariant.availableForSale ? 'bg-success' : 'bg-error'
-            }`} />
-            {selectedVariant.availableForSale ? 'In stock' : 'Currently out of stock'}
-          </p>
-        )}
-
-        {/* Trust strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-4 border-y border-outline-variant/50">
-          {TRUST_ICONS.map(({ Icon, label }) => (
-            <div key={label} className="flex flex-col items-center gap-1.5 text-center">
-              <Icon size={18} strokeWidth={1.5} className="text-primary" />
-              <span className="text-[10px] font-semibold text-outline tracking-wide uppercase leading-tight">
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* ── ACCORDIONS ──────────────────────────────────────────── */}
-        <div>
-
-          {/* 1. Description — full Shopify descriptionHtml */}
+      {/* ── ACCORDIONS ──────────────────────────────────────────── */}
+      <div className="pt-4">
+        
+        {copy?.benefits && (
           <AccordionItem
-            id="description"
-            title="Description"
-            Icon={BookOpen}
-            open={openAccordion === 'description'}
+            id="benefits"
+            title="Benefits"
+            open={openAccordion === 'benefits'}
             onToggle={toggleAccordion}
           >
-            {product.descriptionHtml ? (
-              <div
-                className="prose-shopify"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-              />
-            ) : (
-              <p className="text-sm text-on-surface-variant leading-relaxed">
-                {product.description || 'No description available.'}
-              </p>
-            )}
+            <ul className="flex flex-col gap-2">
+              {copy.benefits.map((benefit, i) => (
+                <li key={i} className="text-sm text-on-surface-variant leading-relaxed flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span> {benefit}
+                </li>
+              ))}
+            </ul>
           </AccordionItem>
+        )}
 
-          {/* 2. Ingredients — from custom / ingredient metafield */}
+        {copy?.fragrance && (
+          <AccordionItem
+            id="fragrance"
+            title="Fragrance Note"
+            open={openAccordion === 'fragrance'}
+            onToggle={toggleAccordion}
+          >
+            <p className="text-sm text-on-surface-variant leading-relaxed">
+              {copy.fragrance}
+            </p>
+          </AccordionItem>
+        )}
+
+        {copy?.ingredients && (
           <AccordionItem
             id="ingredients"
-            title="Ingredients"
-            Icon={FlaskConical}
+            title="Full Ingredients"
             open={openAccordion === 'ingredients'}
             onToggle={toggleAccordion}
           >
-            {ingredientMeta?.value
-              ? renderMetaValue(ingredientMeta.value, ingredientMeta.type)
-              : (
-                <p className="text-sm text-outline italic">
-                  Ingredients not added yet. Go to Shopify Admin → Products → [this product] → Metafields → Ingredient.
-                </p>
-              )
-            }
+            <p className="text-[13px] text-on-surface-variant leading-relaxed">
+              {copy.ingredients}
+            </p>
           </AccordionItem>
+        )}
 
-          {/* 3. Directions to Use — from custom / direction_to_use metafield */}
+        {copy?.suitability && (
           <AccordionItem
-            id="directions"
-            title="Directions to Use"
-            Icon={Leaf}
-            open={openAccordion === 'directions'}
+            id="suitability"
+            title="Who It's For"
+            open={openAccordion === 'suitability'}
             onToggle={toggleAccordion}
           >
-            {directionMeta?.value
-              ? renderMetaValue(directionMeta.value, directionMeta.type)
-              : (
-                <p className="text-sm text-outline italic">
-                  Directions not added yet. Go to Shopify Admin → Products → [this product] → Metafields → Direction to use.
-                </p>
-              )
-            }
+            <p className="text-sm text-on-surface-variant leading-relaxed">
+              {copy.suitability}
+            </p>
           </AccordionItem>
+        )}
 
-        </div>
+        <AccordionItem
+          id="specs"
+          title="Specifications"
+          open={openAccordion === 'specs'}
+          onToggle={toggleAccordion}
+        >
+          <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-xs">
+            <div className="text-outline">Net weight</div><div className="text-on-surface-variant">100 g</div>
+            <div className="text-outline">MRP</div><div className="text-on-surface-variant">₹149 (inclusive of all taxes)</div>
+            <div className="text-outline">Unit sale price</div><div className="text-on-surface-variant">₹1.49 per g</div>
+            <div className="text-outline">Shelf life</div><div className="text-on-surface-variant">36 months from date of manufacture</div>
+            <div className="text-outline">Soap base</div><div className="text-on-surface-variant">Goat Milk</div>
+            <div className="text-outline">Country of origin</div><div className="text-on-surface-variant">India</div>
+            <div className="text-outline">Mfg licence</div><div className="text-on-surface-variant">MH/105462</div>
+          </div>
+        </AccordionItem>
+
+        <AccordionItem
+          id="legal"
+          title="Legal & Contact"
+          open={openAccordion === 'legal'}
+          onToggle={toggleAccordion}
+        >
+          <div className="text-[11px] text-on-surface-variant leading-relaxed space-y-3 font-mono">
+            <p>
+              <strong>Manufactured by:</strong><br />
+              Ketaki Industries, 553 Dhamangaon, Saphale, Palghar 401102, Maharashtra<br />
+              Mfg. Lic. No.: MH/105462 | GMP & ISO 9001:2015
+            </p>
+            <p>
+              <strong>Marketed by:</strong><br />
+              FN Ayurnidhi Lifescience Company<br />
+              Apt. No. 503 B, ANP Retreat, Bhumkar Chowk, Pune 411057, Maharashtra
+            </p>
+            <p>
+              <strong>For feedback and enquiries:</strong><br />
+              Customer Care: +91 94527 28268<br />
+              Email: fnayurnidhilsc@gmail.com<br />
+              Instagram: @thegaav
+            </p>
+            <p className="italic pt-2">Made with Love in India</p>
+          </div>
+        </AccordionItem>
+
       </div>
-    </>
+    </div>
   );
 }
 
