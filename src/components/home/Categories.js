@@ -27,39 +27,39 @@ function Categories() {
     fetch();
   }, []);
 
-  if (loading) return <section className="px-6 py-12"><LoadingSpinner /></section>;
+  if (loading) return <section className="px-6 py-12 bg-surface"><LoadingSpinner /></section>;
 
   // If no collections exist in backend, do not display hardcoded fallback cards
   if (!collections || collections.length === 0) {
     return (
-      <section className="py-12 sm:py-16 bg-[#fcf9f8]">
+      <section className="py-12 sm:py-16 bg-surface border-y border-outline-variant/30">
         <div className="max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
-          <h2 className="font-serif text-2xl sm:text-3xl text-[#4a2e10] font-bold mb-3">
+          <h2 className="font-serif text-2xl sm:text-3xl text-primary font-bold mb-3">
             Categories
           </h2>
-          <p className="text-sm text-[#7a6452]">No categories added in backend yet.</p>
+          <p className="text-sm text-surface-dim">No categories added in backend yet.</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="py-12 sm:py-16 bg-[#fcf9f8]">
+    <section className="py-12 sm:py-16 bg-surface border-y border-outline-variant/30">
       <div className="max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between mb-6 sm:mb-8">
-          <h2 className="font-serif text-2xl sm:text-3xl text-[#4a2e10] font-bold">
+          <h2 className="font-serif text-2xl sm:text-3xl text-primary font-bold">
             Categories
           </h2>
           <Link 
             to="/shop" 
-            className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#7a6452] hover:text-[#4a2e10] transition-colors"
+            className="text-[11px] font-bold tracking-[0.15em] uppercase text-outline hover:text-primary transition-colors"
           >
             View All
           </Link>
         </div>
 
         {/* Categories Grid / Scroll - Only Backend Collections */}
-        <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {collections.map((c) => {
             // Priority: collection banner image -> first product image
             const img = c.image?.url || c.products?.edges?.[0]?.node?.images?.edges?.[0]?.node?.url;
@@ -68,9 +68,9 @@ function Categories() {
               <Link 
                 key={c.id} 
                 to={`/collection/${c.handle}`}
-                className="group shrink-0 w-[160px] sm:w-[220px] lg:w-[280px] snap-start flex flex-col items-center"
+                className="group flex flex-col"
               >
-                <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden bg-[#eee7df] relative shadow-sm group-hover:shadow-md transition-shadow">
+                <div className="w-full aspect-square rounded-sm overflow-hidden bg-surface-container relative border border-outline-variant/30">
                   {img ? (
                     <img 
                       src={img} 
@@ -79,13 +79,13 @@ function Categories() {
                       loading="lazy" 
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#eae5dd] text-[#7a6452] font-serif text-sm px-4 text-center">
+                    <div className="w-full h-full flex items-center justify-center text-outline/50 font-sans text-sm">
                       {c.title}
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
                 </div>
-                <h3 className="mt-3 font-sans text-xs sm:text-sm font-bold tracking-[0.15em] text-[#4a2e10] uppercase group-hover:text-[#8c6239] transition-colors text-center line-clamp-1">
+                <h3 className="mt-4 font-serif text-lg font-bold text-primary group-hover:text-primary-container transition-colors text-center line-clamp-1">
                   {c.title}
                 </h3>
               </Link>

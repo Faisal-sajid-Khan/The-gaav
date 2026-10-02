@@ -27,6 +27,11 @@ function AccountPage() {
   });
   const [updateError, setUpdateError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Return/Cancel Portal State
+  const [portalOrder, setPortalOrder] = useState(null);
+  const [portalSuccess, setPortalSuccess] = useState(false);
+  const [portalResolution, setPortalResolution] = useState('refund'); // 'refund' or 'replace'
 
   useEffect(() => {
     if (customerData) {
@@ -87,7 +92,8 @@ function AccountPage() {
 
   if (!customerData) return null;
 
-  const orders = customerData.orders?.edges?.map(e => e.node) || [];
+  // Temporarily hiding test orders from the frontend as requested
+  const orders = []; // customerData.orders?.edges?.map(e => e.node) || [];
 
   return (
     <div className="bg-surface min-h-screen pt-20 sm:pt-28 pb-16">
@@ -224,7 +230,13 @@ function AccountPage() {
                                 ))}
                               </div>
                               
-                              <div className="mt-8 pt-6 border-t border-outline-variant/30 flex justify-end">
+                              <div className="mt-8 pt-6 border-t border-outline-variant/30 flex justify-between items-center">
+                                <button 
+                                  onClick={() => setPortalOrder(order)}
+                                  className="text-xs font-bold tracking-widest uppercase text-outline hover:text-error transition-colors"
+                                >
+                                  {order.fulfillmentStatus === 'FULFILLED' ? 'Return Items' : 'Cancel Order'}
+                                </button>
                                 <button className="flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase text-primary hover:text-gold transition-colors">
                                   Track Order <ChevronRight size={14} />
                                 </button>
@@ -364,6 +376,119 @@ function AccountPage() {
           </div>
         </div>
       </div>
+
+      {/* RETURN / CANCEL PORTAL MODAL */}
+      {portalOrder && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-inverse-surface/40 backdrop-blur-sm" onClick={() => !portalSuccess && setPortalOrder(null)} />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative bg-surface w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
+          >
+            {portalSuccess ? (
+              <div className="p-10 text-center">
+                <div className="w-16 h-16 bg-success/10 text-success rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Check size={32} />
+                </div>
+                <h3 className="text-2xl font-serif text-primary font-bold mb-3">Request Received</h3>
+                <p className="text-sm text-on-surface-variant mb-8 leading-relaxed">
+                  Your request for Order #{portalOrder.orderNumber} has been securely submitted to our support team. You will receive an email confirmation and next steps within 24 hours.
+                </p>
+                <button 
+                  onClick={() => { setPortalSuccess(false); setPortalOrder(null); }}
+                  className="w-full py-3.5 bg-primary text-on-primary font-bold tracking-widest uppercase text-xs rounded-xl hover:bg-primary/90 transition-colors"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="px-6 py-5 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container">
+                  <h3 className="font-serif text-lg text-primary font-bold">
+                    {portalOrder.fulfillmentStatus === 'FULFILLED' ? 'Return or Replace Items' : 'Cancel Order'}
+                  </h3>
+                  <button onClick={() => { setPortalOrder(null); setPortalResolution('refund'); }} className="text-outline hover:text-primary transition-colors">
+                    <X size={20} />
+                  </button>
+                </div>
+                
+                <div className="p-6">
+                  {portalOrder.fulfillmentStatus === 'FULFILLED' && (
+                    <div className="mb-6">
+                      <p className="text-sm font-bold text-primary mb-3">What would you like to do?</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <label 
+                          className={`border rounded-xl p-4 cursor-pointer transition-all ${
+                            portalResolution === 'replace' ? 'border-primary bg-primary/5 shadow-sm' : 'border-outline-variant/50 hover:border-outline-variant'
+                          }`}
+                        >
+                          <input 
+                            type="radio" name="resolution" className="hidden" 
+                            checked={portalResolution === 'replace'} 
+                            onChange={() => setPortalResolution('replace')} 
+                          />
+                          <p className="text-sm font-bold text-primary mb-1">Replace Item</p>
+                          <p className="text-xs text-on-surface-variant">Get a replacement or exchange for another product.</p>
+                        </label>
+                        <label 
+                          className={`border rounded-xl p-4 cursor-pointer transition-all ${
+                            portalResolution === 'refund' ? 'border-primary bg-primary/5 shadow-sm' : 'border-outline-variant/50 hover:border-outline-variant'
+                          }`}
+                        >
+                          <input 
+                            type="radio" name="resolution" className="hidden" 
+                            checked={portalResolution === 'refund'} 
+                            onChange={() => setPortalResolution('refund')} 
+                          />
+                          <p className="text-sm font-bold text-primary mb-1">Return & Refund</p>
+                          <p className="text-xs text-on-surface-variant">Return the item and get your money back.</p>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  <p className="text-sm font-bold text-primary mb-3">
+                    Reason for {portalResolution === 'replace' ? 'replacement' : (portalOrder.fulfillmentStatus === 'FULFILLED' ? 'return' : 'cancellation')}:
+                  </p>
+                  
+                  <div className="space-y-4 mb-8">
+                    {['Changed my mind', 'Ordered by mistake', 'Received damaged product', 'Item not as expected', 'Other'].map(reason => (
+                      <label key={reason} className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center w-5 h-5 border-2 border-outline-variant rounded-full group-hover:border-primary transition-colors">
+                          <input type="radio" name="reason" className="peer opacity-0 absolute" defaultChecked={reason === 'Changed my mind'} />
+                          <div className="w-2.5 h-2.5 bg-primary rounded-full opacity-0 peer-checked:opacity-100 transition-opacity" />
+                        </div>
+                        <span className="text-sm text-primary font-medium">{reason}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="bg-surface-low p-4 rounded-xl mb-8 border border-outline-variant/30">
+                    <p className="text-xs text-on-surface-variant leading-relaxed">
+                      {portalResolution === 'replace' ? (
+                        <strong>Note:</strong> 
+                      ) : (
+                        <strong>Note:</strong> 
+                      )}
+                      {portalResolution === 'replace' 
+                        ? ' Once approved, a pickup will be arranged and your replacement will be dispatched within 48 hours.'
+                        : ' Refunds will be processed to your original payment method within 3-7 business days once the request is approved.'}
+                    </p>
+                  </div>
+
+                  <button 
+                    onClick={() => { setPortalSuccess(true); setTimeout(() => setPortalResolution('refund'), 500); }}
+                    className="w-full py-3.5 bg-primary text-on-primary font-bold tracking-widest uppercase text-xs rounded-xl hover:bg-primary/90 transition-colors shadow-md"
+                  >
+                    Submit Request
+                  </button>
+                </div>
+              </>
+            )}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

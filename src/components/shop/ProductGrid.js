@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../../store/cartSlice';
 import { openCartDrawer } from '../../store/uiSlice';
-import { Plus, SlidersHorizontal } from 'lucide-react';
+import { Plus, SlidersHorizontal, ChevronDown } from 'lucide-react';
 
 import { productCopy } from '../product/productCopy';
 
@@ -133,6 +133,9 @@ function ProductGrid({ products, loading }) {
                 </div>
                 
                 <div className="pt-4 pb-2 flex flex-col gap-1.5">
+                  {copy?.accentHex && (
+                    <div className="w-8 h-1 rounded-full mb-1" style={{ backgroundColor: copy.accentHex }} />
+                  )}
                   <h3 className="font-serif text-lg font-bold text-primary group-hover:text-primary-container transition-colors leading-tight">
                     {p.title}
                   </h3>

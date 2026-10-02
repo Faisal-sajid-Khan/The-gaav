@@ -48,6 +48,9 @@ export async function getAllProducts(first = 50) {
             }
           }
           tags vendor productType
+          
+          lidLine: metafield(namespace: "custom", key: "lid_line") { value }
+          fullIngredients: metafield(namespace: "custom", key: "full_ingredients") { value }
         }
       }
       pageInfo { hasNextPage endCursor }
@@ -89,13 +92,13 @@ export async function getProductByHandle(handle) {
       tags vendor productType
       seo { title description }
 
-      # ── Metafields (custom namespace, keys set in Shopify Admin) ──
-      ingredient_meta: metafield(namespace: "custom", key: "ingredient") {
-        value type
-      }
-      direction_meta: metafield(namespace: "custom", key: "direction_to_use") {
-        value type
-      }
+      # ── Custom Metafields (from PDF Copy Deck) ──
+      lidLine: metafield(namespace: "custom", key: "lid_line") { value }
+      shortDescription: metafield(namespace: "custom", key: "short_description") { value }
+      storyBlock: metafield(namespace: "custom", key: "story_block") { value }
+      benefitsList: metafield(namespace: "custom", key: "benefits_list") { value }
+      fragranceNote: metafield(namespace: "custom", key: "fragrance_note") { value }
+      fullIngredients: metafield(namespace: "custom", key: "full_ingredients") { value }
     }
   }`;
   return shopifyFetch(query, { handle });
@@ -143,6 +146,8 @@ export async function getProductsByCollection(handle, first = 50) {
             variants(first: 5) {
               edges { node { id title availableForSale price { amount currencyCode } } }
             }
+            lidLine: metafield(namespace: "custom", key: "lid_line") { value }
+            fullIngredients: metafield(namespace: "custom", key: "full_ingredients") { value }
           }
         }
         pageInfo { hasNextPage endCursor }

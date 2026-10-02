@@ -428,7 +428,7 @@ function Navbar() {
             <button onClick={() => dispatch(toggleSearch())} className="p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" aria-label="Search">
               <Search size={20} strokeWidth={1.5} />
             </button>
-            <Link to="/account" className="hidden sm:flex p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" aria-label="Account">
+            <Link to="/account" className="flex p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" aria-label="Account">
               <User size={20} strokeWidth={1.5} />
             </Link>
             <button onClick={() => dispatch(toggleCartDrawer())} className="relative flex items-center gap-2 p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all group" aria-label="Cart">

@@ -16,7 +16,7 @@ function InstagramFeed() {
       <div className="max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="text-center mb-6 sm:mb-8">
           <a 
-            href="https://instagram.com" 
+            href="https://www.instagram.com/thegaav/" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="font-sans text-xs sm:text-sm font-bold tracking-[0.2em] text-[#7a6452] hover:text-[#4a2e10] uppercase transition-colors"
@@ -30,7 +30,7 @@ function InstagramFeed() {
           {INSTA_IMAGES.map((img, i) => (
             <a 
               key={i} 
-              href="https://instagram.com" 
+              href="https://www.instagram.com/thegaav/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="group relative aspect-square overflow-hidden rounded-xl bg-[#eee7df]"

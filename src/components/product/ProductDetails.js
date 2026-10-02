@@ -172,85 +172,111 @@ function ProductDetails({ product }) {
     'kanti': 'kanti'
   };
   const key = handleMap[product.handle?.toLowerCase()];
-  const copy = key ? productCopy[key] : null;
+  const fallbackCopy = key ? productCopy[key] : null;
+
+  // Helper to get from Shopify metafield OR fallback hardcoded copy
+  const getMeta = (metaKey, fallbackKey) => {
+    return product[metaKey]?.value || fallbackCopy?.[fallbackKey || metaKey];
+  };
+
+  const lidLine = getMeta('lidLine');
+  const shortDescription = getMeta('shortDescription');
+  const longDescription = product.description || fallbackCopy?.longDescription;
+  const story = getMeta('storyBlock', 'story');
+  const benefits = getMeta('benefitsList', 'benefits');
+  const fragrance = getMeta('fragranceNote', 'fragrance');
+  const ingredients = getMeta('fullIngredients', 'ingredients');
+  const suitability = getMeta('suitability'); // They might add this later
 
   return (
-    <div className="space-y-6">
-      {/* Brand Tagline */}
-      <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-outline">
-        Village Wisdom / Modern Care
-      </p>
-
-      {/* Title */}
-      <h1 className="font-serif text-3xl sm:text-4xl text-primary font-bold leading-tight -mt-2">
-        {product.title}
-      </h1>
-
-      {/* Short Description (Hero) */}
-      {copy?.shortDescription && (
-        <p className="text-[15px] text-on-surface-variant leading-relaxed">
-          {copy.shortDescription}
+    <>
+      <style>{descriptionStyles}</style>
+      <div className="space-y-6">
+        {/* Brand Tagline */}
+        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-outline">
+          Village Wisdom / Modern Care
         </p>
-      )}
 
-      {/* Price & Weight */}
-      <div>
-        <div className="flex items-end gap-3 flex-wrap">
-          <span className="font-sans font-semibold text-2xl text-primary">
-            ₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
-          </span>
-          <span className="text-sm text-outline-variant font-medium pb-1">| 100 g</span>
-        </div>
-        <p className="text-[11px] text-outline mt-1 tracking-wide">Inclusive of all taxes</p>
-      </div>
-
-      <div className="h-px bg-outline-variant/30" />
-
-      {/* Quantity + CTA */}
-      <div className="flex items-center gap-3 pt-2">
-        <div className="flex items-center border border-outline-variant rounded-none overflow-hidden h-12">
-          <button
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="w-12 h-full flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
-          >
-            <Minus size={14} strokeWidth={2} />
-          </button>
-          <span className="w-8 text-center text-sm font-semibold text-primary select-none">
-            {quantity}
-          </span>
-          <button
-            onClick={() => setQuantity(quantity + 1)}
-            className="w-12 h-full flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
-          >
-            <Plus size={14} strokeWidth={2} />
-          </button>
+        {/* Title */}
+        <div className="pt-1">
+          {fallbackCopy?.accentHex && (
+            <div className="w-12 h-1.5 rounded-full mb-3" style={{ backgroundColor: fallbackCopy.accentHex }} />
+          )}
+          <h1 className="font-serif text-3xl sm:text-4xl text-primary font-bold leading-tight -mt-1">
+            {product.title}
+          </h1>
         </div>
 
-        <button
-          onClick={handleAdd}
-          disabled={adding || !selectedVariant?.availableForSale}
-          className="flex-1 h-12 bg-primary text-on-primary font-bold text-sm tracking-[0.1em] uppercase hover:bg-primary-container transition-all duration-200 disabled:opacity-40"
-        >
-          {adding
-            ? <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin inline-block" />
-            : 'Add to Cart'}
-        </button>
-      </div>
-
-      {/* Long description */}
-      {copy?.longDescription && (
-        <div className="pt-6">
-          <p className="text-sm text-on-surface-variant leading-loose whitespace-pre-line">
-            {copy.longDescription}
+        {/* Short Description (Hero) */}
+        {shortDescription && (
+          <p className="text-[15px] text-on-surface-variant leading-relaxed whitespace-pre-line">
+            {shortDescription}
           </p>
+        )}
+
+        {/* Price & Weight */}
+        <div>
+          <div className="flex items-end gap-3 flex-wrap">
+            <span className="font-sans font-semibold text-2xl text-primary">
+              ₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+            </span>
+            <span className="text-sm text-outline-variant font-medium pb-1">| 100 g</span>
+          </div>
+          <p className="text-[11px] text-outline mt-1 tracking-wide">Inclusive of all taxes</p>
         </div>
-      )}
+
+        <div className="h-px bg-outline-variant/30" />
+
+        {/* Quantity + CTA */}
+        <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center border border-outline-variant rounded-none overflow-hidden h-12">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="w-12 h-full flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
+            >
+              <Minus size={14} strokeWidth={2} />
+            </button>
+            <span className="w-8 text-center text-sm font-semibold text-primary select-none">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="w-12 h-full flex items-center justify-center text-primary hover:bg-surface-high transition-colors"
+            >
+              <Plus size={14} strokeWidth={2} />
+            </button>
+          </div>
+
+          <button
+            onClick={handleAdd}
+            disabled={adding || !selectedVariant?.availableForSale}
+            className="flex-1 h-12 bg-primary text-on-primary font-bold text-sm tracking-[0.1em] uppercase hover:bg-primary-container transition-all duration-200 disabled:opacity-40"
+          >
+            {adding
+              ? <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin inline-block" />
+              : 'Add to Cart'}
+          </button>
+        </div>
+
+        {/* Long description (Rich text from Shopify or Fallback) */}
+        <div className="pt-6">
+          {product.descriptionHtml ? (
+            <div 
+              className="prose-shopify"
+              dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} 
+            />
+          ) : longDescription ? (
+            <p className="text-sm text-on-surface-variant leading-loose whitespace-pre-line">
+              {longDescription}
+            </p>
+          ) : null}
+        </div>
 
       {/* The Story Block */}
-      {copy?.story && (
+      {story && (
         <div className="bg-gaav-cream p-6 my-8 border-l-2 border-primary">
           <p className="text-sm text-primary font-serif leading-relaxed whitespace-pre-line italic">
-            "{copy.story}"
+            "{story}"
           </p>
         </div>
       )}
@@ -284,58 +310,64 @@ function ProductDetails({ product }) {
       {/* ── ACCORDIONS ──────────────────────────────────────────── */}
       <div className="pt-4">
         
-        {copy?.benefits && (
+        {benefits && (
           <AccordionItem
             id="benefits"
             title="Benefits"
             open={openAccordion === 'benefits'}
             onToggle={toggleAccordion}
           >
-            <ul className="flex flex-col gap-2">
-              {copy.benefits.map((benefit, i) => (
-                <li key={i} className="text-sm text-on-surface-variant leading-relaxed flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span> {benefit}
-                </li>
-              ))}
-            </ul>
+            {Array.isArray(benefits) ? (
+              <ul className="flex flex-col gap-2">
+                {benefits.map((benefit, i) => (
+                  <li key={i} className="text-sm text-on-surface-variant leading-relaxed flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span> {benefit}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-on-surface-variant leading-relaxed whitespace-pre-line">
+                {benefits}
+              </p>
+            )}
           </AccordionItem>
         )}
 
-        {copy?.fragrance && (
+        {fragrance && (
           <AccordionItem
             id="fragrance"
             title="Fragrance Note"
             open={openAccordion === 'fragrance'}
             onToggle={toggleAccordion}
           >
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              {copy.fragrance}
+            <p className="text-sm text-on-surface-variant leading-relaxed whitespace-pre-line">
+              {fragrance}
             </p>
           </AccordionItem>
         )}
 
-        {copy?.ingredients && (
+        {ingredients && (
           <AccordionItem
             id="ingredients"
             title="Full Ingredients"
             open={openAccordion === 'ingredients'}
             onToggle={toggleAccordion}
           >
-            <p className="text-[13px] text-on-surface-variant leading-relaxed">
-              {copy.ingredients}
+            <p className="text-[13px] text-on-surface-variant leading-relaxed whitespace-pre-line">
+              {ingredients}
             </p>
           </AccordionItem>
         )}
 
-        {copy?.suitability && (
+        {suitability && (
           <AccordionItem
             id="suitability"
             title="Who It's For"
             open={openAccordion === 'suitability'}
             onToggle={toggleAccordion}
           >
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              {copy.suitability}
+            <p className="text-sm text-on-surface-variant leading-relaxed whitespace-pre-line">
+              {suitability}
             </p>
           </AccordionItem>
         )}
@@ -378,7 +410,7 @@ function ProductDetails({ product }) {
               <strong>For feedback and enquiries:</strong><br />
               Customer Care: +91 94527 28268<br />
               Email: fnayurnidhilsc@gmail.com<br />
-              Instagram: @thegaav
+              Instagram: <a href="https://www.instagram.com/thegaav/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors underline decoration-outline-variant underline-offset-2">@thegaav</a>
             </p>
             <p className="italic pt-2">Made with Love in India</p>
           </div>
@@ -386,6 +418,7 @@ function ProductDetails({ product }) {
 
       </div>
     </div>
+    </>
   );
 }
 
