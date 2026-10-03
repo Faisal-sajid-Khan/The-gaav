@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
-function RecentlyViewed() {
+function RecentlyViewed({ currentProductId }) {
   const [recent, setRecent] = useState([]);
 
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
-      setRecent(stored);
+      const filtered = stored.filter(p => p.id !== currentProductId).slice(0, 4);
+      setRecent(filtered);
     } catch (e) {
       console.error('Error reading recently viewed', e);
     }
-  }, []);
+  }, [currentProductId]);
 
   if (recent.length === 0) return null;
 

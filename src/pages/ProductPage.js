@@ -35,7 +35,7 @@ function ProductPage() {
             type: data.productType || 'HERITAGE BLEND'
           };
           const stored = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
-          const updated = [viewedItem, ...stored.filter(i => i.id !== data.id)].slice(0, 4);
+          const updated = [viewedItem, ...stored.filter(i => i.id !== data.id)].slice(0, 5);
           localStorage.setItem('recentlyViewed', JSON.stringify(updated));
         } catch (e) {
           console.error('Error saving recently viewed', e);
@@ -68,7 +68,7 @@ function ProductPage() {
           </div>
         </div>
 
-        <RecentlyViewed />
+        <RecentlyViewed currentProductId={product.id} />
 
       </div>
     </div>
