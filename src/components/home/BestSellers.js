@@ -84,7 +84,9 @@ function BestSellers() {
             products.map(({ node: p }) => {
               const image = p.images?.edges?.[0]?.node?.url;
               const variant = p.variants?.edges?.[0]?.node;
-              const price = p.priceRange?.minVariantPrice?.amount;
+              const price = parseFloat(p.priceRange?.minVariantPrice?.amount || 0);
+              const compare = parseFloat(p.compareAtPriceRange?.minVariantPrice?.amount || 0);
+              const discount = compare > price ? Math.round(((compare - price) / compare) * 100) : 0;
               const type = p.productType || 'HERITAGE BLEND';
 
               return (
@@ -108,9 +110,21 @@ function BestSellers() {
                       <p className="text-[10px] font-bold tracking-[0.15em] text-[#8c7462] uppercase mt-0.5">
                         {type}
                       </p>
-                      <p className="text-xs sm:text-sm font-bold text-[#4a2e10] mt-1">
-                        ₹{Number(price).toLocaleString('en-IN')}
-                      </p>
+                      <div className="flex items-center flex-wrap gap-1.5 mt-1">
+                        <p className="text-xs sm:text-sm font-bold text-[#4a2e10]">
+                          ₹{Number(price).toLocaleString('en-IN')}
+                        </p>
+                        {discount > 0 && (
+                          <>
+                            <p className="text-[10px] text-[#8c7462] line-through">
+                              ₹{Number(compare).toLocaleString('en-IN')}
+                            </p>
+                            <p className="text-[9px] font-bold bg-[#4a2e10]/10 text-[#4a2e10] px-1 py-0.5 rounded">
+                              {discount}% OFF
+                            </p>
+                          </>
+                        )}
+                      </div>
                     </div>
                     <button 
                       onClick={(e) => handleAdd(e, variant?.id)}

@@ -220,6 +220,16 @@ function ProductDetails({ product }) {
             <span className="font-sans font-semibold text-2xl text-primary">
               ₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
             </span>
+            {discount > 0 && (
+              <>
+                <span className="text-base text-outline-variant line-through pb-[3px]">
+                  ₹{Number(compare).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+                </span>
+                <span className="text-xs font-medium bg-success/10 text-success px-2 py-1 rounded pb-[4px]">
+                  {discount}% OFF
+                </span>
+              </>
+            )}
             <span className="text-sm text-outline-variant font-medium pb-1">| 100 g</span>
           </div>
           <p className="text-[11px] text-outline mt-1 tracking-wide">Inclusive of all taxes</p>

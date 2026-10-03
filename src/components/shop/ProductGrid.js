@@ -95,7 +95,9 @@ function ProductGrid({ products, loading }) {
           {sorted.map(({ node: p }) => {
             const image = p.images?.edges?.[0]?.node;
             const variant = p.variants?.edges?.[0]?.node;
-            const price = p.priceRange?.minVariantPrice?.amount;
+            const price = parseFloat(p.priceRange?.minVariantPrice?.amount || 0);
+            const compare = parseFloat(p.compareAtPriceRange?.minVariantPrice?.amount || 0);
+            const discount = compare > price ? Math.round(((compare - price) / compare) * 100) : 0;
             
             const key = handleMap[p.handle?.toLowerCase()];
             const copy = key ? productCopy[key] : null;
@@ -146,8 +148,18 @@ function ProductGrid({ products, loading }) {
                     </p>
                   )}
                   
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
                     <span className="text-sm font-bold text-primary">{price ? formatINR(price) : '₹0'}</span>
+                    {discount > 0 && (
+                      <>
+                        <span className="text-[11px] text-outline-variant line-through">
+                          {formatINR(compare)}
+                        </span>
+                        <span className="text-[10px] font-semibold bg-success/10 text-success px-1.5 py-0.5 rounded">
+                          {discount}% OFF
+                        </span>
+                      </>
+                    )}
                     <span className="text-[11px] font-medium text-outline-variant border-l border-outline-variant pl-2">100 g</span>
                   </div>
 
