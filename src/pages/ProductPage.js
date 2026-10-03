@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getProductByHandle } from '../lib/shopify';
 import ProductGallery from '../components/product/ProductGallery';
 import ProductDetails from '../components/product/ProductDetails';
+import RecentlyViewed from '../components/product/RecentlyViewed';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
 import { ArrowLeft, Star } from 'lucide-react';
@@ -21,6 +22,25 @@ function ProductPage() {
         const data = response.data?.product;
         if (!data) throw new Error('Product not found');
         setProduct(data);
+
+        // Save to recently viewed
+        try {
+          const viewedItem = {
+            id: data.id,
+            handle: data.handle,
+            title: data.title,
+            image: data.images?.edges?.[0]?.node?.url,
+            price: data.priceRange?.minVariantPrice?.amount,
+            compareAtPrice: data.compareAtPriceRange?.minVariantPrice?.amount,
+            type: data.productType || 'HERITAGE BLEND'
+          };
+          const stored = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+          const updated = [viewedItem, ...stored.filter(i => i.id !== data.id)].slice(0, 4);
+          localStorage.setItem('recentlyViewed', JSON.stringify(updated));
+        } catch (e) {
+          console.error('Error saving recently viewed', e);
+        }
+
       } catch (err) { setError(err.message); }
       finally { setLoading(false); }
     };
@@ -47,6 +67,8 @@ function ProductPage() {
             <ProductDetails product={product} />
           </div>
         </div>
+
+        <RecentlyViewed />
 
       </div>
     </div>
