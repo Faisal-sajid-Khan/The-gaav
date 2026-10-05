@@ -45,7 +45,7 @@ function RegisterPage() {
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center py-16 px-5 sm:px-8 bg-surface">
-      <div className="w-full max-w-lg bg-white p-8 sm:p-12 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/30">
+      <div className="w-full max-w-md bg-white p-8 sm:p-12 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/30">
         
         <div className="text-center mb-8">
           <h1 className="font-serif text-3xl text-primary font-bold mb-2">Create Account</h1>
