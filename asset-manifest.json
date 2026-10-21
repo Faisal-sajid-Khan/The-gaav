@@ -1,14 +1,16 @@
 {
   "files": {
-    "main.css": "/The-gaav/static/css/main.f099db45.css",
-    "main.js": "/The-gaav/static/js/main.94c8927e.js",
+    "main.css": "/The-gaav/static/css/main.c405c290.css",
+    "main.js": "/The-gaav/static/js/main.884af150.js",
     "static/media/hero-bg.jpg": "/The-gaav/static/media/hero-bg.1701d876d1ef6604c5b5.jpg",
+    "static/media/trio-wrapped.jpg": "/The-gaav/static/media/trio-wrapped.04d5f8f642b0dcf7df4d.jpg",
+    "static/media/2.png": "/The-gaav/static/media/2.c7360b22bd9e22fe5c92.png",
     "index.html": "/The-gaav/index.html",
-    "main.f099db45.css.map": "/The-gaav/static/css/main.f099db45.css.map",
-    "main.94c8927e.js.map": "/The-gaav/static/js/main.94c8927e.js.map"
+    "main.c405c290.css.map": "/The-gaav/static/css/main.c405c290.css.map",
+    "main.884af150.js.map": "/The-gaav/static/js/main.884af150.js.map"
   },
   "entrypoints": [
-    "static/css/main.f099db45.css",
-    "static/js/main.94c8927e.js"
+    "static/css/main.c405c290.css",
+    "static/js/main.884af150.js"
   ]
 }
