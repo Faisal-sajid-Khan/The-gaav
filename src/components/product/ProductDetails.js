@@ -85,7 +85,7 @@ function renderMetaValue(value, type) {
 const TRUST_ICONS = [
   { Icon: ShieldCheck, label: '100% Authentic'     },
   { Icon: Leaf,        label: 'Cruelty Free'        },
-  { Icon: Truck,       label: 'Free Shipping ₹999+' },
+  { Icon: Truck,       label: 'Free Shipping ₹499+' },
   { Icon: RotateCcw,   label: 'Easy Returns'        },
 ];
 

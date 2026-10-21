@@ -31,7 +31,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface overflow-x-hidden w-full">
       <ScrollToTop />
       <Navbar />
       <CartDrawer />

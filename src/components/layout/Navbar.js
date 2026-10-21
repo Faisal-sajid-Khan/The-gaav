@@ -17,13 +17,12 @@ import logoImg from '../../assets/Asset 1.png';
    STATIC NAV LINKS (non-shop items)
 ───────────────────────────────────────────── */
 const OTHER_NAV = [
-  { label: 'About',     href: '#about'  },
-  { label: 'Our Story', href: '#story'  },
-  { label: 'Blog',      href: '#blog'   },
+  { label: 'Ingredients', href: '#ingredients' },
+  { label: 'Our Story',   href: '#story'       },
 ];
 
 const ANNOUNCEMENTS = [
-  { icon: Truck,    text: 'Free shipping on orders above ₹999' },
+  { icon: Truck,    text: 'Free shipping on orders above ₹499' },
   { icon: Sparkles, text: 'Handcrafted with love — every stitch tells a story' },
   { icon: Gift,     text: 'Gift wrapping available on all orders' },
   { icon: Tag,      text: 'New collection just dropped — explore now' },
@@ -58,15 +57,18 @@ function AnnouncementBar() {
   );
 }
 
+const COMING_SOON_PRODUCTS = [
+  'Face Wash',
+  'Deo Stick',
+  'Moisturizers',
+  'Serums',
+  'Fragrance',
+];
+
 /* ─────────────────────────────────────────────
-   MEGA MENU  (dynamic collections)
+   MEGA MENU  (dynamic collections + coming soon)
 ───────────────────────────────────────────── */
 function MegaMenu({ collections, isOpen }) {
-  // Split collections into two equal columns
-  const mid   = Math.ceil(collections.length / 2);
-  const colA  = collections.slice(0, mid);
-  const colB  = collections.slice(mid);
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -94,13 +96,13 @@ function MegaMenu({ collections, isOpen }) {
               </Link>
             </div>
 
-            {/* Dynamic collection columns */}
+            {/* Dynamic collection + Coming Soon columns */}
             <div className="col-span-2 p-6 grid grid-cols-2 gap-6">
-              {/* Column A */}
+              {/* Collections Column */}
               <div>
                 <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-outline mb-3">Collections</p>
                 <ul className="flex flex-col gap-2.5">
-                  {colA.map((col) => (
+                  {collections.map((col) => (
                     <li key={col.id}>
                       <Link
                         to={`/collection/${col.handle}`}
@@ -113,24 +115,19 @@ function MegaMenu({ collections, isOpen }) {
                 </ul>
               </div>
 
-              {/* Column B — only if we have enough collections */}
-              {colB.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-outline mb-3">More</p>
-                  <ul className="flex flex-col gap-2.5">
-                    {colB.map((col) => (
-                      <li key={col.id}>
-                        <Link
-                          to={`/collection/${col.handle}`}
-                          className="text-sm text-on-surface-variant hover:text-primary transition-colors font-medium"
-                        >
-                          {col.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {/* Coming Soon Column */}
+              <div>
+                <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-outline mb-3">Coming Soon</p>
+                <ul className="flex flex-col gap-2.5">
+                  {COMING_SOON_PRODUCTS.map((name) => (
+                    <li key={name}>
+                      <span className="text-sm text-on-surface-variant/70 font-medium cursor-default">
+                        {name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -247,10 +244,9 @@ function SearchOverlay({ isOpen, onClose }) {
 ───────────────────────────────────────────── */
 function MobileSidebar({ isOpen, onClose, cartCount, onCartOpen, collections }) {
   const staticLinks = [
-    { label: 'About',        href: '#about'   },
-    { label: 'Our Story',    href: '#story'   },
-    { label: 'Blog',         href: '#blog'    },
-    { label: 'Contact',      href: '#contact' },
+    { label: 'Ingredients',  href: '#ingredients' },
+    { label: 'Our Story',    href: '#story'       },
+    { label: 'Contact',      href: '#contact'     },
   ];
 
   // Merge dynamic collections + static links
@@ -371,29 +367,33 @@ function Navbar() {
       <motion.header
         initial={false}
         animate={scrolled
-          ? { backgroundColor: 'rgba(252,249,248,0.97)', borderBottomColor: 'rgba(212,196,183,0.5)' }
-          : { backgroundColor: 'rgba(252,249,248,0.0)', borderBottomColor: 'rgba(212,196,183,0)' }
+          ? { backgroundColor: 'rgba(252,249,248,0.98)', borderBottomColor: 'rgba(212,196,183,0.6)', boxShadow: '0 4px 20px -2px rgba(74,46,16,0.05)' }
+          : { backgroundColor: 'rgba(252,249,248,0.92)', borderBottomColor: 'rgba(212,196,183,0.35)', boxShadow: 'none' }
         }
-        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="sticky top-0 z-50 w-full border-b"
-        style={{ backdropFilter: scrolled ? 'blur(20px)' : 'blur(0px)', WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'blur(0px)' }}
+        style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       >
         <div className="max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-12 h-16 flex items-center justify-between gap-4">
 
           {/* Left: hamburger + logo */}
-          <div className="flex items-center gap-4">
+          {/* Left: hamburger + logo with brand title */}
+          <div className="flex items-center gap-3">
             <button onClick={() => dispatch(toggleMobileMenu())} className="lg:hidden flex flex-col gap-[5px] p-2 group" aria-label="Open menu">
               <span className="block w-5 h-[1.5px] bg-primary rounded-full transition-all duration-300 group-hover:w-6" />
               <span className="block w-5 h-[1.5px] bg-primary rounded-full transition-all duration-300 group-hover:w-4" />
             </button>
-            <Link to="/" className="flex items-center group shrink-0 py-1">
+            <Link to="/" className="flex items-center gap-3 group shrink-0 py-1">
               <img src={logoImg} alt="THEGAAV" className="h-10 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+              <span className="font-serif text-xl sm:text-[22px] font-semibold tracking-[0.02em] text-[#3B2314]">
+                The Gaav
+              </span>
             </Link>
           </div>
 
-          {/* Centre: desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1 relative">
-            {/* Shop — with dynamic mega menu */}
+          {/* Right-aligned desktop nav: Shop, Ingredients, Our Story */}
+          <nav className="hidden lg:flex items-center gap-7 sm:gap-9 ml-auto">
+            {/* Shop — with dynamic mega menu preserved */}
             <div
               className="relative"
               onMouseEnter={() => handleMenuEnter('Shop')}
@@ -401,8 +401,8 @@ function Navbar() {
             >
               <Link
                 to="/shop"
-                className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-semibold tracking-wide transition-all duration-200 ${
-                  location.pathname === '/shop' ? 'text-primary bg-primary/8' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container'
+                className={`flex items-center gap-1.5 py-2 text-base font-medium tracking-wide transition-colors ${
+                  location.pathname === '/shop' ? 'text-primary font-semibold' : 'text-[#3B2314] hover:text-[#6B4F35]'
                 }`}
               >
                 Shop
@@ -411,28 +411,33 @@ function Navbar() {
               <MegaMenu collections={collections} isOpen={activeMenu === 'Shop'} />
             </div>
 
-            {/* Other static links */}
-            {OTHER_NAV.map((item) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                className="px-4 py-2 rounded-lg text-sm font-semibold tracking-wide text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-200"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {/* Ingredients */}
+            <a
+              href="#ingredients"
+              className="py-2 text-base font-medium tracking-wide text-[#3B2314] hover:text-[#6B4F35] transition-colors"
+            >
+              Ingredients
+            </a>
+
+            {/* Our Story */}
+            <Link
+              to="/about"
+              className="py-2 text-base font-medium tracking-wide text-[#3B2314] hover:text-[#6B4F35] transition-colors"
+            >
+              Our Story
+            </Link>
           </nav>
 
-          {/* Right: search + account + cart + CTA */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          {/* Right: search + account + cart */}
+          <div className="flex items-center gap-1.5 sm:gap-2 ml-4 sm:ml-6">
             <button onClick={() => dispatch(toggleSearch())} className="p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" aria-label="Search">
-              <Search size={20} strokeWidth={1.5} />
+              <Search size={20} strokeWidth={1.7} />
             </button>
             <Link to="/account" className="flex p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" aria-label="Account">
-              <User size={20} strokeWidth={1.5} />
+              <User size={20} strokeWidth={1.7} />
             </Link>
-            <button onClick={() => dispatch(toggleCartDrawer())} className="relative flex items-center gap-2 p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all group" aria-label="Cart">
-              <ShoppingBag size={20} strokeWidth={1.5} />
+            <button onClick={() => dispatch(toggleCartDrawer())} className="relative flex items-center p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all group" aria-label="Cart">
+              <ShoppingBag size={20} strokeWidth={1.7} />
               <AnimatePresence>
                 {itemCount > 0 && (
                   <motion.span
@@ -446,9 +451,6 @@ function Navbar() {
                 )}
               </AnimatePresence>
             </button>
-            <Link to="/shop" className="hidden md:flex ml-1 items-center gap-1.5 bg-primary text-on-primary px-4 py-2 rounded-xl text-xs font-bold tracking-[0.12em] uppercase hover:bg-primary/85 transition-all group">
-              Shop Now <ArrowRight size={13} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
-            </Link>
           </div>
         </div>
       </motion.header>
