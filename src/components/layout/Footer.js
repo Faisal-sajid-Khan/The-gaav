@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, MessageCircle } from 'lucide-react';
-import logoImg from '../../assets/Asset 2.png';
+import logoImg from '../../assets/2.png';
 
 function Footer() {
   return (
@@ -35,7 +35,7 @@ function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="text-[#DBCBB4] hover:text-[#F5EDE0] transition-colors">
+                <Link to="/cart#build-your-three" className="text-[#DBCBB4] hover:text-[#F5EDE0] transition-colors">
                   Build your three
                 </Link>
               </li>
@@ -69,7 +69,7 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href="tel:+919452720268" className="text-[#DBCBB4] hover:text-[#F5EDE0] transition-colors">
+                <a href="tel:+919834222363" className="text-[#DBCBB4] hover:text-[#F5EDE0] transition-colors">
                   Contact
                 </a>
               </li>
@@ -124,7 +124,7 @@ function Footer() {
             </a>
 
             <a
-              href="https://wa.me/919452720268"
+              href="https://wa.me/919834222363"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Order on WhatsApp"

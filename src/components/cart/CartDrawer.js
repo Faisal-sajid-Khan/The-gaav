@@ -1,9 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { X, Minus, Plus, Trash2 } from 'lucide-react';
+import { X, Minus, Plus, Trash2, Check } from 'lucide-react';
 import { closeCartDrawer } from '../../store/uiSlice';
-import { updateItemQuantity, removeItemFromCart } from '../../store/cartSlice';
+import { updateItemQuantity, removeItemFromCart, addItemToCart } from '../../store/cartSlice';
+
+const BARS = [
+  { id: 'utane', name: 'Utanē', marathi: 'उटणं', variantId: 'gid://shopify/ProductVariant/67603874218058' },
+  { id: 'nikhar', name: 'Nikhār', marathi: 'निखार', variantId: 'gid://shopify/ProductVariant/67609374523466' },
+  { id: 'nirmal', name: 'Nirmaḷ', marathi: 'निर्मळ', variantId: 'gid://shopify/ProductVariant/67609377701962' },
+  { id: 'kanti', name: 'Kānti', marathi: 'कांती', variantId: 'gid://shopify/ProductVariant/67609377964106' },
+];
 
 const formatINR = (amount) => {
   return new Intl.NumberFormat('en-IN', {
@@ -30,10 +37,50 @@ function CartDrawer() {
   };
 
   const cartLines = cart?.lines?.edges || [];
-  const subtotal = cart?.cost?.subtotalAmount?.amount || '0.00';
-  const total = cart?.cost?.totalAmount?.amount || '0.00';
-  const currency = cart?.cost?.subtotalAmount?.currencyCode || 'INR';
+  const rawSubtotal = parseFloat(cart?.cost?.subtotalAmount?.amount || 0);
   const checkoutUrl = cart?.checkoutUrl;
+
+  // Total quantity of bars across all line items
+  const totalCartQty = cartLines.reduce((sum, { node: line }) => sum + (line.quantity || 1), 0);
+
+  // Bundle Offer Calculation:
+  // - 3 bars: ₹399 (Original ₹447, Save ₹48)
+  // - 4 bars: ₹499 (Original ₹596, Save ₹97)
+  // - >4 bars: ₹499 + (qty - 4) * 149
+  // - 2 bars: ₹298
+  // - 1 bar: ₹149
+  let originalSubtotal = rawSubtotal > 0 ? rawSubtotal : totalCartQty * 149;
+  let finalSubtotal = originalSubtotal;
+  let savings = 0;
+  let offerBadge = null;
+  let upsellNudge = null;
+
+  if (totalCartQty === 3) {
+    finalSubtotal = 399;
+    originalSubtotal = Math.max(originalSubtotal, 447);
+    savings = originalSubtotal - 399;
+    offerBadge = 'Trio Offer Applied (3 for ₹399)';
+  } else if (totalCartQty === 4) {
+    finalSubtotal = 499;
+    originalSubtotal = Math.max(originalSubtotal, 596);
+    savings = originalSubtotal - 499;
+    offerBadge = 'Complete Pack Offer Applied (4 for ₹499)';
+  } else if (totalCartQty > 4) {
+    finalSubtotal = 499 + (totalCartQty - 4) * 149;
+    savings = Math.max(0, originalSubtotal - finalSubtotal);
+    if (savings > 0) {
+      offerBadge = `Pack Offer Applied (Save ₹${savings})`;
+    }
+  } else if (totalCartQty === 2) {
+    finalSubtotal = 298;
+    upsellNudge = 'Add 1 more bar to unlock the Trio for ₹399 (Save ₹48)!';
+  } else if (totalCartQty === 1) {
+    finalSubtotal = 149;
+    upsellNudge = 'Add 2 more bars to get 3 for ₹399 (Save ₹48 + Free Shipping)!';
+  }
+
+  // Find missing bar for quick 1-click add when 3 bars are in cart
+  const missingBar = BARS.find((b) => !cartLines.some(({ node: line }) => line.merchandise?.id === b.variantId));
 
   return (
     <>
@@ -116,21 +163,75 @@ function CartDrawer() {
 
           {/* Footer */}
           {cartLines.length > 0 && (
-            <div className="px-6 py-5 border-t border-outline-variant bg-surface-low">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-on-surface-variant">Subtotal</span>
-                <span className="font-serif text-lg text-primary">{formatINR(subtotal)}</span>
+            <div className="px-6 py-5 border-t border-outline-variant bg-surface-low space-y-3">
+              {/* Offer Applied Banner */}
+              {offerBadge && (
+                <div className="bg-[#1B4332]/10 border border-[#1B4332]/25 rounded-[2px] px-3.5 py-2 flex items-center justify-between text-xs text-[#1B4332] font-semibold">
+                  <span className="flex items-center gap-1.5">
+                    <Check size={14} strokeWidth={2.5} />
+                    {offerBadge}
+                  </span>
+                  <span className="font-bold">Save ₹{savings}</span>
+                </div>
+              )}
+
+              {/* Quick Upsell to 4th bar if 3 are in cart */}
+              {totalCartQty === 3 && missingBar && (
+                <div className="bg-[#F5EDE0] rounded-[2px] p-2.5 px-3 flex items-center justify-between text-xs text-[#3B2314] border border-[#DECDBB]">
+                  <span className="text-[12px]">Add <strong>{missingBar.name}</strong> for ₹100 to make it all 4</span>
+                  <button
+                    type="button"
+                    onClick={() => dispatch(addItemToCart({ variantId: missingBar.variantId, quantity: 1 }))}
+                    disabled={loading}
+                    className="bg-[#3B2314] text-[#F5EDE0] px-2.5 py-1 rounded text-[10.5px] font-bold uppercase tracking-wider hover:bg-[#2A180D] transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
+                  >
+                    + Add
+                  </button>
+                </div>
+              )}
+
+              {/* Subtotal */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-on-surface-variant font-medium">Subtotal</span>
+                <div className="flex items-baseline gap-2">
+                  {savings > 0 && (
+                    <span className="line-through text-xs sm:text-sm text-on-surface-variant/70">
+                      ₹{Math.round(originalSubtotal)}
+                    </span>
+                  )}
+                  <span className="font-serif text-xl font-bold text-primary">
+                    ₹{finalSubtotal}
+                  </span>
+                </div>
               </div>
-              <p className="text-xs text-on-surface-variant mb-4">Shipping calculated at checkout</p>
+
+              {/* Shipping */}
+              <div className="flex items-center justify-between text-xs text-on-surface-variant">
+                <span>Shipping</span>
+                <span className="text-[#1B4332] font-semibold">
+                  {totalCartQty >= 3 ? 'Free' : 'Free above ₹499'}
+                </span>
+              </div>
+
+              {/* Nudge if 1 or 2 bars */}
+              {upsellNudge && (
+                <p className="text-[11.5px] text-[#6B4F35] bg-[#F5EDE0] px-3 py-1.5 rounded-[2px] text-center font-serif">
+                  ✨ {upsellNudge}
+                </p>
+              )}
+
+              {/* Checkout Button */}
               {checkoutUrl ? (
                 <a 
                   href={`${checkoutUrl}${checkoutUrl.includes('?') ? '&' : '?'}return_to=${encodeURIComponent(window.location.origin + '/shop')}`} 
-                  className="btn-primary w-full block text-center"
+                  className="btn-primary w-full block text-center py-3.5 text-xs sm:text-sm font-bold tracking-[0.14em] uppercase"
                 >
-                  Checkout
+                  Checkout — ₹{finalSubtotal}
                 </a>
               ) : (
-                <button className="btn-primary w-full opacity-50 cursor-not-allowed">Checkout</button>
+                <button className="btn-primary w-full opacity-50 cursor-not-allowed py-3.5 text-xs sm:text-sm font-bold tracking-[0.14em] uppercase">
+                  Checkout — ₹{finalSubtotal}
+                </button>
               )}
             </div>
           )}

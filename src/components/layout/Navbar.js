@@ -11,7 +11,7 @@ import {
   toggleSearch,
   closeSearch,
 } from '../../store/uiSlice';
-import logoImg from '../../assets/Asset 1.png';
+import logoImg from '../../assets/2.png';
 
 /* ─────────────────────────────────────────────
    STATIC NAV LINKS (non-shop items)
@@ -72,14 +72,15 @@ function MegaMenu({ collections, isOpen }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[580px] rounded-2xl overflow-hidden shadow-2xl border border-outline-variant/30"
-          style={{ background: 'rgba(252,249,248,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
-        >
+        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="w-[580px] rounded-2xl overflow-hidden shadow-2xl border border-outline-variant/30"
+            style={{ background: 'rgba(252,249,248,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+          >
           <div className="grid grid-cols-3 gap-0">
             {/* Featured promo panel */}
             <div className="col-span-1 bg-primary p-6 flex flex-col justify-between">
@@ -102,6 +103,15 @@ function MegaMenu({ collections, isOpen }) {
               <div>
                 <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-outline mb-3">Collections</p>
                 <ul className="flex flex-col gap-2.5">
+                  <li>
+                    <Link
+                      to="/cart#build-your-three"
+                      className="text-sm text-primary font-semibold hover:text-[#3B2314] transition-colors flex items-center justify-between group"
+                    >
+                      <span>Build your three</span>
+                      <span className="text-xs text-outline group-hover:translate-x-0.5 transition-transform">₹399 →</span>
+                    </Link>
+                  </li>
                   {collections.map((col) => (
                     <li key={col.id}>
                       <Link
@@ -131,6 +141,7 @@ function MegaMenu({ collections, isOpen }) {
             </div>
           </div>
         </motion.div>
+      </div>
       )}
     </AnimatePresence>
   );
@@ -275,8 +286,8 @@ function MobileSidebar({ isOpen, onClose, cartCount, onCartOpen, collections }) 
         className="fixed top-0 left-0 h-full w-80 max-w-[85vw] z-[70] flex flex-col bg-surface border-r border-outline-variant/40 shadow-2xl"
       >
         <div className="flex items-center justify-between px-7 py-6 border-b border-outline-variant/40">
-          <Link to="/" onClick={onClose} className="flex items-center group shrink-0">
-            <img src={logoImg} alt="THEGAAV" className="h-9 w-auto object-contain" />
+          <Link to="/" onClick={onClose} className="flex items-center group shrink-0" aria-label="The Gaav — Home">
+            <img src={logoImg} alt="The Gaav" className="h-8 sm:h-9 w-auto object-contain" />
           </Link>
           <button onClick={onClose} className="p-1.5 text-on-surface-variant hover:text-primary transition-colors">
             <X size={22} strokeWidth={1.5} />
@@ -374,25 +385,21 @@ function Navbar() {
         className="sticky top-0 z-50 w-full border-b"
         style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       >
-        <div className="max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-12 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-12 h-16 flex items-center justify-between gap-4 relative">
 
-          {/* Left: hamburger + logo */}
           {/* Left: hamburger + logo with brand title */}
           <div className="flex items-center gap-3">
             <button onClick={() => dispatch(toggleMobileMenu())} className="lg:hidden flex flex-col gap-[5px] p-2 group" aria-label="Open menu">
               <span className="block w-5 h-[1.5px] bg-primary rounded-full transition-all duration-300 group-hover:w-6" />
               <span className="block w-5 h-[1.5px] bg-primary rounded-full transition-all duration-300 group-hover:w-4" />
             </button>
-            <Link to="/" className="flex items-center gap-3 group shrink-0 py-1">
-              <img src={logoImg} alt="THEGAAV" className="h-10 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
-              <span className="font-serif text-xl sm:text-[22px] font-semibold tracking-[0.02em] text-[#3B2314]">
-                The Gaav
-              </span>
+            <Link to="/" className="flex items-center group shrink-0 py-1" aria-label="The Gaav — Home">
+              <img src={logoImg} alt="The Gaav" className="h-9 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
             </Link>
           </div>
 
-          {/* Right-aligned desktop nav: Shop, Ingredients, Our Story */}
-          <nav className="hidden lg:flex items-center gap-7 sm:gap-9 ml-auto">
+          {/* Centered desktop nav: Shop, Ingredients, Our Story */}
+          <nav className="hidden lg:flex items-center gap-7 sm:gap-9 absolute left-1/2 -translate-x-1/2">
             {/* Shop — with dynamic mega menu preserved */}
             <div
               className="relative"
@@ -422,14 +429,18 @@ function Navbar() {
             {/* Our Story */}
             <Link
               to="/about"
-              className="py-2 text-base font-medium tracking-wide text-[#3B2314] hover:text-[#6B4F35] transition-colors"
+              className={`py-1 text-base font-medium tracking-wide transition-colors ${
+                location.pathname === '/about' || location.pathname === '/story'
+                  ? 'text-[#3B2314] font-semibold border-b border-[#3B2314]'
+                  : 'text-[#3B2314] hover:text-[#6B4F35]'
+              }`}
             >
               Our Story
             </Link>
           </nav>
 
           {/* Right: search + account + cart */}
-          <div className="flex items-center gap-1.5 sm:gap-2 ml-4 sm:ml-6">
+          <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
             <button onClick={() => dispatch(toggleSearch())} className="p-2.5 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" aria-label="Search">
               <Search size={20} strokeWidth={1.7} />
             </button>

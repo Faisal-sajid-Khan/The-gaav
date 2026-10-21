@@ -3,10 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { getProductByHandle } from '../lib/shopify';
 import ProductGallery from '../components/product/ProductGallery';
 import ProductDetails from '../components/product/ProductDetails';
+import ProductFAQ from '../components/product/ProductFAQ';
 import RecentlyViewed from '../components/product/RecentlyViewed';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
-import { ArrowLeft, Star } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 function ProductPage() {
   const { handle } = useParams();
@@ -67,6 +68,9 @@ function ProductPage() {
             <ProductDetails product={product} />
           </div>
         </div>
+
+        {/* Product FAQ Section */}
+        <ProductFAQ />
 
         <RecentlyViewed currentProductId={product.id} />
 

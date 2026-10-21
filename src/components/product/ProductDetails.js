@@ -418,7 +418,7 @@ function ProductDetails({ product }) {
             </p>
             <p>
               <strong>For feedback and enquiries:</strong><br />
-              Customer Care: +91 94527 28268<br />
+              WhatsApp / Customer Care: <a href="https://wa.me/919834222363" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors underline decoration-outline-variant underline-offset-2">+91 98342 22363</a><br />
               Email: fnayurnidhilsc@gmail.com<br />
               Instagram: <a href="https://www.instagram.com/thegaav/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors underline decoration-outline-variant underline-offset-2">@thegaav</a>
             </p>

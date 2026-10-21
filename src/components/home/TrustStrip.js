@@ -21,6 +21,7 @@ const TRUST_ITEMS = [
     icon: MessageCircle,
     title: 'Order on WhatsApp',
     desc: 'A real person replies',
+    href: 'https://wa.me/919834222363?text=Hi%20The%20Gaav%2C%20I%20would%20like%20to%20order',
   },
 ];
 
@@ -31,8 +32,8 @@ function TrustStrip() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {TRUST_ITEMS.map((item) => {
             const IconComponent = item.icon;
-            return (
-              <div key={item.title} className="flex items-start gap-4">
+            const content = (
+              <div className="flex items-start gap-4">
                 <IconComponent
                   size={24}
                   strokeWidth={1.5}
@@ -48,6 +49,22 @@ function TrustStrip() {
                 </div>
               </div>
             );
+
+            if (item.href) {
+              return (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-85 transition-opacity block cursor-pointer"
+                >
+                  {content}
+                </a>
+              );
+            }
+
+            return <div key={item.title}>{content}</div>;
           })}
         </div>
       </div>

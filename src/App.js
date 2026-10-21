@@ -22,6 +22,7 @@ import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/AccountPage';
+import StoryPage from './pages/StoryPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -42,10 +43,14 @@ function App() {
           <Route path="/shop/:handle" element={<ProductPage />} />
           <Route path="/collection/:handle" element={<CollectionPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/build-your-three" element={<CartPage />} />
+          <Route path="/trio" element={<CartPage />} />
           <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/about" element={<StoryPage />} />
+          <Route path="/story" element={<StoryPage />} />
         </Routes>
       </main>
       <Footer />

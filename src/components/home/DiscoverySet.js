@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../../store/cartSlice';
 import { openCartDrawer } from '../../store/uiSlice';
@@ -45,7 +46,7 @@ function DiscoverySet() {
             Try all four.<br />Then pick your one.
           </h2>
           <p className="font-serif text-base sm:text-lg leading-[1.62] text-[#DBCBB4] max-w-[470px] mb-9">
-            Fragrance is personal, and nobody picks right from a screen. Start with all four bars, find the one that&apos;s yours, then reorder just that — or build your own three.
+            Fragrance is personal, and nobody picks right from a screen. Start with all four bars, find the one that&apos;s yours, then reorder just that — or <Link to="/cart#build-your-three" className="underline underline-offset-4 decoration-[#BFA98D] hover:text-white transition-colors">build your own three</Link>.
           </p>
           <div className="flex flex-wrap items-center gap-6">
             <button
@@ -83,17 +84,26 @@ function DiscoverySet() {
                 <span className="text-base sm:text-[17px] text-[#DBCBB4] font-semibold">₹149</span>
               </div>
               <div className="h-[1px] bg-[#5C4332]" />
-              <div className="flex justify-between items-baseline gap-4">
-                <span className="text-base sm:text-[17px] text-[#F5EDE0]">Any three bars</span>
-                <span className="text-base sm:text-[17px] text-[#DBCBB4] font-semibold">₹399</span>
-              </div>
+              <Link
+                to="/cart#build-your-three"
+                className="flex justify-between items-baseline gap-4 group hover:opacity-90 transition-opacity cursor-pointer py-0.5"
+              >
+                <span className="text-base sm:text-[17px] text-[#F5EDE0] group-hover:underline underline-offset-4">Any three bars (Build your own)</span>
+                <span className="text-base sm:text-[17px] text-[#DBCBB4] font-semibold group-hover:translate-x-0.5 transition-transform">₹399 →</span>
+              </Link>
               <div className="h-[1px] bg-[#5C4332]" />
               <div className="flex justify-between items-baseline gap-4">
                 <span className="text-base sm:text-[17px] text-[#F5EDE0]">All four bars</span>
                 <span className="text-base sm:text-[17px] text-[#DBCBB4] font-semibold">₹499</span>
               </div>
             </div>
-            <p className="mt-7 text-xs sm:text-sm leading-[1.6] text-[#BFA98D]">
+            <Link
+              to="/cart#build-your-three"
+              className="mt-6 w-full py-3 px-4 bg-[#F5EDE0] text-[#3B2314] text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] block text-center hover:bg-white active:scale-[0.99] transition-all shadow-sm"
+            >
+              Build your three — ₹399
+            </Link>
+            <p className="mt-5 text-xs sm:text-sm leading-[1.6] text-[#BFA98D]">
               Free shipping above ₹499. Below that, ₹50 flat. Cash on delivery available across India.
             </p>
           </div>
